@@ -1,5 +1,6 @@
-PyInquirer
+InquirerPy
 rich
 requests
 pymediainfo
 beautifulsoup4
+json

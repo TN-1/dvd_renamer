@@ -9,7 +9,8 @@ from __future__ import print_function, unicode_literals
 from dvd_renamer.libs import process_dvd, dvd_rewind
 from pprint import pprint
 from prompt_toolkit.validation import Validator, ValidationError
-from PyInquirer import prompt, print_json
+from InquirerPy import prompt
+import json
 from rich import print
 from rich.console import Console
 import argparse
@@ -85,6 +86,7 @@ def unhandled_files(data):
         if 'new_filename' not in extra:
             timestr = str(extra['minutes']) + ':' + str(extra['seconds']).zfill(2)
             print(extra['filename'] + ' ' + timestr)
+
 
 def show_files_to_rename(data):
     """Show which files will be renamed."""
@@ -288,7 +290,7 @@ def full_process_series(args):
 
         if (answers is not None and answers['ep_title'] != 'None of the above'
             and answers['ep_title'] != 'SKIP'):
-            fixed_ep_title = re.sub(re.compile('\(.*\)'), '', answers['ep_title'])
+            fixed_ep_title = re.sub(re.compile(r'\(.*\)'), '', answers['ep_title'])
             if answers['ep_number'] == 0:
                 have_special = True
                 sp_questions = [
@@ -321,8 +323,6 @@ def full_process_series(args):
                 new_filename = final_dir + '/' + 'Season ' + str(season).zfill(2) + '/' + 'S' + str(season).zfill(2) + 'E' + str(answers['ep_number']).zfill(2) + ' - ' + fixed_ep_title + '.mkv'
             data[index]['new_filename'] = new_filename
 
-
-    # pprint(data)
     header()
 
     # handle making directories
@@ -436,7 +436,6 @@ def full_process_movie(args):
                 data[index]['new_filename'] = new_filename
                 data[index]['extra_type'] = answers['type']
 
-        # pprint(data)
         header()
         
         # handle making directories
@@ -461,10 +460,10 @@ def full_process_movie(args):
         print("Could not find movie on http://dvdcompare.net/comparisons/")
         exit(1)
 
+
 def main():
     args = parse_args()
     if not args.series:
         full_process_movie(args)
     else:
         full_process_series(args)
-
